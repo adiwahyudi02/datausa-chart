@@ -1,8 +1,8 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import Home from "@/pages";
 import { useGetPopulationQuery } from "@/hooks/queries/useGetPopulationQuery";
 import { populationResMock } from "@/constants/mocks/population";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Home from "@/pages";
 
 jest.mock("@/hooks/queries/useGetPopulationQuery");
 
