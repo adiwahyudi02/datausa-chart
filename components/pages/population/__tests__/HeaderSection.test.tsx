@@ -1,52 +1,47 @@
 import { render, screen } from "@testing-library/react";
 import { HeaderSection } from "../HeaderSection";
 
-describe("HeaderSection", () => {
-  it("should render sourceName and sourceDescription when provided", () => {
-    const sourceName = "My Source";
-    const sourceDescription = "This is a description of the source.";
+jest.mock("@/components/commons/Spinner", () => ({
+  Spinner: jest.fn(() => <div data-testid="spinner">Loading...</div>),
+}));
 
+describe("HeaderSection", () => {
+  it("should render the loading spinner when isLoading is true", () => {
+    render(<HeaderSection isLoading={true} />);
+
+    // Check that the spinner is rendered
+    expect(screen.getByTestId("spinner")).toBeInTheDocument();
+
+    // Ensure no other content is displayed
+    expect(screen.queryByText(/Test Source/)).toBeNull();
+    expect(screen.queryByText(/Test Description/)).toBeNull();
+  });
+
+  it("should render source name and description when isLoading is false", () => {
     render(
       <HeaderSection
-        sourceName={sourceName}
-        sourceDescription={sourceDescription}
+        sourceName="Test Source"
+        sourceDescription="Test Description"
+        isLoading={false}
       />
     );
 
-    // Check if sourceName and sourceDescription are rendered
-    expect(screen.getByText(sourceName)).toBeInTheDocument();
-    expect(screen.getByText(sourceDescription)).toBeInTheDocument();
+    // Check that the content is displayed
+    expect(screen.getByText("Test Source")).toBeInTheDocument();
+    expect(screen.getByText("Test Description")).toBeInTheDocument();
+
+    // Ensure the spinner is not rendered
+    expect(screen.queryByTestId("spinner")).toBeNull();
   });
 
-  it("should render only sourceName when sourceDescription is not provided", () => {
-    const sourceName = "My Source";
+  it("should render empty content when no source name or description is provided", () => {
+    render(<HeaderSection isLoading={false} />);
 
-    render(<HeaderSection sourceName={sourceName} />);
+    // Ensure no content is displayed
+    expect(screen.queryByText(/Test Source/)).toBeNull();
+    expect(screen.queryByText(/Test Description/)).toBeNull();
 
-    // Check if only sourceName is rendered
-    expect(screen.getByText(sourceName)).toBeInTheDocument();
-    expect(
-      screen.queryByText(/This is a description of the source./)
-    ).toBeNull();
-  });
-
-  it("should render only sourceDescription when sourceName is not provided", () => {
-    const sourceDescription = "This is a description of the source.";
-
-    render(<HeaderSection sourceDescription={sourceDescription} />);
-
-    // Check if only sourceDescription is rendered
-    expect(screen.getByText(sourceDescription)).toBeInTheDocument();
-    expect(screen.queryByText(/My Source/)).toBeNull();
-  });
-
-  it("should render nothing when neither sourceName nor sourceDescription are provided", () => {
-    render(<HeaderSection />);
-
-    // Check that nothing is rendered
-    expect(screen.queryByText(/My Source/)).toBeNull();
-    expect(
-      screen.queryByText(/This is a description of the source./)
-    ).toBeNull();
+    // Ensure the spinner is not rendered
+    expect(screen.queryByTestId("spinner")).toBeNull();
   });
 });

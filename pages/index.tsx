@@ -83,6 +83,7 @@ export default function Home() {
       <HeaderSection
         sourceName={annotations?.source_name}
         sourceDescription={annotations?.source_description}
+        isLoading={isLoading}
       />
       <FilterSection
         defaultStartYear={defaultYear.start}
